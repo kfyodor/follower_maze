@@ -16,11 +16,12 @@ module FollowerMaze
           loop do
             raise "EOF" if conn.eof?
             data    = conn.gets(DELIMITER).strip
-            message = Event.new(data)
+            message = Event.from_payload(data)
             message.handle!
           end
         rescue => e
           puts e.message
+          puts e.backtrace
           conn.close
         end
       end
