@@ -1,6 +1,10 @@
 module FollowerMaze
   class Base
     class << self
+      def events_buffer
+        @events_buffer ||= FollowerMaze::EventsBuffer.new
+      end
+
       def connected_users
         @connected_users ||= FollowerMaze::UserConnectionPool.new
       end

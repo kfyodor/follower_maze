@@ -1,8 +1,6 @@
-require 'singleton'
-
 module FollowerMaze
   class Event
-    attr_reader :type, :to, :from
+    attr_reader :id, :type, :to, :from
 
     @@types = {}
 
@@ -34,6 +32,10 @@ module FollowerMaze
       end
     end
 
+    def <=>(event)
+      id <=> event.id
+    end
+
     def handle!
       raise "`handle!` is not implemented."
     end
@@ -53,5 +55,3 @@ end
 Dir[File.expand_path(File.dirname(__FILE__)) + "/event" + "/*.rb"].each do |f|
   require f
 end
-
-

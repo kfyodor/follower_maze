@@ -14,7 +14,7 @@ module FollowerMaze
     end
 
     def notify(data)
-      @socket.write(data)
+      @socket.puts(data)
     end
 
     def add_follower(user_id)

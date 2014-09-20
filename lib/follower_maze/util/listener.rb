@@ -1,7 +1,6 @@
 module FollowerMaze
   module Util
     class Listener
-
       def initialize(options = {}) 
         @port   = options[:port] || '3000'
         @host   = options[:host] || '0.0.0.0'
@@ -17,7 +16,6 @@ module FollowerMaze
           s.setsockopt(Socket::IPPROTO_TCP, Socket::TCP_NODELAY, 1)
         end
       end
-
     end
   end
 end
