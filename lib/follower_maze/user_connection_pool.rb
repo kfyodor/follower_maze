@@ -1,3 +1,5 @@
+require 'forwardable'
+
 module FollowerMaze
   class UserConnectionPool
     extend Forwardable
@@ -27,11 +29,11 @@ module FollowerMaze
 
     def close
       @mutex.synchronize do
-        @connections.values.map &:close
+        @connections.values.map &:disconnect
         @connections = {}
       end
     end
 
-    alias_method :[], :find
+    alias_method :find, :[]
   end
 end

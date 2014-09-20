@@ -11,12 +11,12 @@ module FollowerMaze
     def listen
       counter = 0
       Thread.new(@socket.accept) do |conn|
-        sleep 0.3
+        # sleep 0.1
         begin 
           loop do
             raise "EOF" if conn.eof?
             data    = conn.gets(DELIMITER).strip
-            message = Message.new(data)
+            message = Event.new(data)
             message.handle!
           end
         rescue => e

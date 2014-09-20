@@ -1,8 +1,8 @@
 module FollowerMaze
   class Base
     class << self
-      def connections
-        @connections ||= FollowerMaze::UserConnectionPool.new
+      def connected_users
+        @connected_users ||= FollowerMaze::UserConnectionPool.new
       end
     end
 

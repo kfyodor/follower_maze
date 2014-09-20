@@ -12,7 +12,8 @@ module FollowerMaze
       loop do
         Thread.new(@socket.accept) do |conn|
           user_id = conn.gets(DELIMITER).strip.to_i
-          Base.connections << UserConnection.new(conn, user_id)
+          Base.connected_users << UserConnection.new(conn, user_id)
+          puts "User #{user_id} connected!"
         end
       end
     end

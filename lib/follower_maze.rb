@@ -7,7 +7,7 @@ require_relative 'follower_maze/clients_listener'
 require_relative 'follower_maze/user_connection_pool'
 require_relative 'follower_maze/user_connection'
 require_relative 'follower_maze/base'
-require_relative 'follower_maze/message'
+require_relative 'follower_maze/event'
 
 module FollowerMaze
   EVENT_SOURCE_PORT = 9090

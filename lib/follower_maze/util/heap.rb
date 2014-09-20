@@ -1,4 +1,3 @@
-
 module FollowerMaze
   module Util
     class Heap

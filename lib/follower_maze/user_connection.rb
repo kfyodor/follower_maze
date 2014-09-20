@@ -9,11 +9,11 @@ module FollowerMaze
       @followers = []
     end
 
-    def close
+    def disconnect
       @socket.close
     end
 
-    def write(data)
+    def notify(data)
       @socket.write(data)
     end
 
