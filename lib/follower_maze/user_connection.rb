@@ -14,7 +14,9 @@ module FollowerMaze
     end
 
     def notify(data)
-      @socket.puts(data)
+      @mutex.synchronize do
+        @socket.puts(data)
+      end
     end
 
     def add_follower(user_id)

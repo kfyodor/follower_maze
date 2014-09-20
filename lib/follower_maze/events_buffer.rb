@@ -11,6 +11,7 @@ module FollowerMaze
     def initialize
       @mutex        = Mutex.new
       @buffer       = SortedSet.new
+      @events_cache = Hash.new
       @size         = 0
       @max_id       = 0
       @first_id     = 1
@@ -18,7 +19,8 @@ module FollowerMaze
 
     def <<(event)
       @mutex.synchronize do
-        @buffer << event
+        @buffer << event.id
+        cache_event! event
         @size += 1
         update_max_id! event
       end
@@ -26,10 +28,15 @@ module FollowerMaze
     end
 
     def min_id
-      @buffer.first.id
+      @buffer.first
     end
 
     private
+
+    def cache_event!(event)
+      key = event.to || 0
+      @events_cache[key] = (@events_cache[key] || SortedSet.new) << event
+    end
 
     def update_max_id!(event)
       if event.id > @max_id && size > 1
@@ -39,7 +46,8 @@ module FollowerMaze
 
     def clear_buffer!
       @mutex.synchronize do
-        @buffer   = SortedSet.new
+        @buffer       = SortedSet.new
+        @events_cache = {}
         @first_id = @max_id + 1
         @size     = 0
       end
@@ -51,10 +59,15 @@ module FollowerMaze
     end
 
     def flush
-      Thread.new(@buffer.dup) do |events|
-        events.each &:handle!
+      threads = []
+      @events_cache.each do |k, v| 
+        threads << Thread.new(v) do |events|
+          events.each &:handle!
+        end
       end
-      puts "----> Sending events with ids #{@buffer.map(&:id).inspect}"
+      threads.map &:join 
+
+      puts "----> Sending events with ids #{@buffer.inspect}"
       clear_buffer!
     end
   end
