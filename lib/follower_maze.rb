@@ -1,7 +1,7 @@
 require 'thread'
 require 'socket'
 
-
+require_relative 'follower_maze/util/listener'
 require_relative 'follower_maze/event_source_listener'
 require_relative 'follower_maze/clients_listener'
 require_relative 'follower_maze/user_connection_pool'

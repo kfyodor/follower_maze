@@ -1,12 +1,5 @@
 module FollowerMaze
-  class ClientsListener
-    attr_reader :connections
-
-    def initialize
-      @socket = TCPServer.new(CLIENTS_PORT).tap do |s|
-        s.setsockopt(Socket::IPPROTO_TCP, Socket::TCP_NODELAY, 1)
-      end
-    end
+  class ClientsListener < Util::Listener
 
     def listen
       loop do

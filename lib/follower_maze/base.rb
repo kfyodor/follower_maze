@@ -6,18 +6,20 @@ module FollowerMaze
       end
     end
 
-    def initialize
+    def initialize(options = {})
+      @listeners = [].tap do |l|
+        l << EventSourceListener.new(port: EVENT_SOURCE_PORT)
+        l << ClientsListener.new(port: CLIENTS_PORT)
+      end
+    end
+
+    def run!
       trap(:INT) { exit }
-      @event_source_listener = EventSourceListener.new.listen
-      @clients_listener      = ClientsListener.new.listen
-    end
+      @listeners.map &:listen
 
-    def connected_clients
-      @clients_listener.connected_clients
-    end
-
-    def run
-      loop {}
+      loop do
+        # run server
+      end
     end
   end
 end
