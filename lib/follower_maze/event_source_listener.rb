@@ -2,10 +2,9 @@
 
 module FollowerMaze
   class EventSourceListener < Util::Listener
-
     def listen
       counter = 0
-      Thread.new(@socket.accept) do |conn|
+      Thread.new(socket.accept) do |conn|
         # sleep 0.1
         begin 
           loop do

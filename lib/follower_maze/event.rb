@@ -47,7 +47,6 @@ module FollowerMaze
     def from_user
       @from_user ||= Base.connected_users.find(from)
     end
-
   end
 end
 
