@@ -1,11 +1,12 @@
 module FollowerMaze
   class Event
     class Broadcast < Event
-      def handle!
-        Base.connected_users.each do |u|
-          u.notify @payload
-          puts "Sent broadcast to #{u.user_id}"
-        end
+      def destination
+        Base.connected_users
+      end
+
+      def multiple?
+        true
       end
     end
   end

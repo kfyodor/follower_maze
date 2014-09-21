@@ -1,11 +1,9 @@
 module FollowerMaze
   class Event
     class Follow < Event
-      def handle!
-       if to_user
-          to_user.add_follower(from)
-          to_user.notify(@payload)
-          puts "Sent Follow to #{to}"
+      def before_notify(user)
+        if from_user
+          user.add_follower(from)
         end
       end
     end

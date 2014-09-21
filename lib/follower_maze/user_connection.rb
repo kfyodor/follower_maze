@@ -13,7 +13,7 @@ module FollowerMaze
       @socket.close
     end
 
-    def notify(data)
+    def notify!(data)
       @mutex.synchronize do
         @socket.puts(data)
       end
