@@ -19,7 +19,6 @@ module FollowerMaze
   EVENT_SOURCE_PORT = 9090
   CLIENTS_PORT      = 9099
   DELIMITER         = $/
-  CONCURRENCY_LEVEL = 8
 
   Thread.abort_on_exception = true
 end

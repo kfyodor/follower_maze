@@ -19,14 +19,19 @@ module FollowerMaze
     end
 
     def run!
-      trap(:INT) do
-        puts "\nBye!"
-        exit 
-      end
+      trap(:INT) { do_exit }
 
       @listeners.map do |l|
         Thread.new { l.listen } # threading hell?
       end.map(&:join)
+    end
+
+    private
+
+    def do_exit
+      @listeners.each { |l| l.socket.close }
+      puts "\nBye!"
+      exit
     end
   end
 end
