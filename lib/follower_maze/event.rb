@@ -2,9 +2,7 @@ module FollowerMaze
   class Event
     attr_reader :id, :type, :to, :from, :payload
 
-    @@types        = {}
-    @@before_hooks = []
-    @@after_hooks  = []
+    @@types = {}
 
     class << self
       def inherited(klass)

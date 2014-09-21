@@ -29,6 +29,7 @@ module FollowerMaze
     private
 
     def do_exit
+      self.class.connected_users.disconect_all!
       @listeners.each { |l| l.socket.close }
       puts "\nBye!"
       exit

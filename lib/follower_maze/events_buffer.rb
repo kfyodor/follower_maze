@@ -2,10 +2,6 @@ require 'set'
 
 module FollowerMaze
   class EventsBuffer
-    # It should be fast enough since
-    # SortedSet uses red-black tree.
-    # proof: https://github.com/ruby/ruby/blob/trunk/lib/set.rb#L579
-
     attr_reader :max_id, :size, :first_id
 
     def initialize

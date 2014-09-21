@@ -1,4 +1,5 @@
 # coding: utf-8
+
 lib = File.dirname(__FILE__)
 $:.unshift lib unless $:.include?(lib)
 

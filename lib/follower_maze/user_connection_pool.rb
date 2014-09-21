@@ -17,7 +17,7 @@ module FollowerMaze
 
     def <<(connection)
       @mutex.synchronize do
-       @connections[connection.user_id] = connection
+        @connections[connection.user_id] = connection
       end
     end
 
@@ -27,11 +27,9 @@ module FollowerMaze
       end.values
     end
 
-    def close
-      @mutex.synchronize do
-        @connections.values.map &:disconnect
-        @connections = {}
-      end
+    def disconect_all!
+      @connections.values.map &:disconnect
+      @connections = {}
     end
 
     alias_method :find, :[]
