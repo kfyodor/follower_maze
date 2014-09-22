@@ -159,7 +159,7 @@ $ ./followermaze.sh
 ```
 
 This will start the clients, which will immediately start sending
-message to your server. You know it finished without errors when it
+messages to your server. You know it finished without errors when it
 outputs:
 
 ```

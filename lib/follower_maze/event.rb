@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 module FollowerMaze
   class Event
     attr_reader :id, :type, :to, :from, :payload
@@ -5,37 +7,34 @@ module FollowerMaze
     @@types = {}
 
     class << self
+
       def inherited(klass)
         klass_name = klass.name
-        type_id    = klass_name.split('::').last[0].upcase
+        type_id    = klass_name.split('::').last[0]
 
-        @@types[type_id] = klass_name
+        @@types[type_id] = klass
       end
 
       def from_payload(payload)
         id, type, from, to = payload.split('|')
-        klass = Object.const_get(@@types[type])
-
-        klass.new(payload, id, type, from, to)
+        @@types[type].new(payload, id, type, from, to)
       end
     end
 
     def initialize(payload, id, type, from, to)
-      @payload = payload
-      @id      = id.to_i
-      @type    = type
-      @from    = from.to_i
-      @to      = to.to_i
+      @payload   = payload
+      @id        = id.to_i
+      @type      = type
+      @from      = from.to_i
+      @to        = to.to_i
+
+      @mutex = Mutex.new
 
       raise_if_called_from_abstract!
     end
 
     def <=>(event)
-      id <=> event.id
-    end
-
-    def multiple?
-      false
+      self.id <=> event.id
     end
 
     def notify?
@@ -43,56 +42,45 @@ module FollowerMaze
     end
 
     def destination
-      [to_user]
+      default_destination
     end
 
     def before_notify(user)
     end
 
     def after_notify(user)
-      puts "Sent #{self.class.name.split('::').last} to #{user.user_id}"
+      Base.logger.debug "Sent #{self.class.name.split('::').last} to #{user.id}"
     end
 
-    def handle!
-      raise_if_called_from_abstract!
-
-      destination.each do |user|
-        break unless user
-
+    def build_notifications
+      [destination].flatten.map do |user|
         before_notify(user)
-
-        if notify?
-          user.notify!(payload)
-        end
-
-        after_notify(user)
-      end
-    end
-
-    def expand
-      if multiple?
-        destination.map do |user|
-          AtomicEvent.new(self, user.user_id)
-        end
-      else
-        [AtomicEvent.new(self, to)]
-      end
-    end
-
-    private
-
-    def raise_if_called_from_abstract!
-      if self.class.name == "FollowerMaze::Event"
-        raise "FollowerMaze::Event is an abstract class."
+        Notification.new(self, user.id)
       end
     end
 
     def to_user
-      @to_user ||= Base.connected_users.find(to)
+      User.find_or_create(@to) if @to
     end
 
     def from_user
-      @from_user ||= Base.connected_users.find(from)
+      User.find_or_create(@from) if @from
+    end
+
+    private
+
+    def default_destination
+      to_user
+    end
+
+    def types
+      self.class.class_variable_get(:@@types)
+    end
+
+    def raise_if_called_from_abstract!
+      unless types.values.include?(self.class)
+        raise "FollowerMaze::Event is an abstract class."
+      end
     end
   end
 end

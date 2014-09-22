@@ -1,12 +1,12 @@
 module FollowerMaze
   class Base
     class << self
-      def events_buffer
-        @events_buffer ||= FollowerMaze::EventsBuffer.new
+      def connections
+        @connections ||= FollowerMaze::ClientConnectionsPool.new
       end
 
-      def connected_users
-        @connected_users ||= FollowerMaze::UserConnectionPool.new
+      def logger
+        @logger ||= Util::Logger.new
       end
     end
 
@@ -21,17 +21,21 @@ module FollowerMaze
     def run!
       trap(:INT) { do_exit }
 
-      @listeners.map do |l|
-        Thread.new { l.listen } # threading hell?
-      end.map(&:join)
+      (@threads = @listeners.map do |l|
+        Thread.new { l.listen }
+      end).map(&:join)
     end
 
     private
 
     def do_exit
-      self.class.connected_users.disconect_all!
+      Base.logger.info "Shutting down..."
+      self.class.connections.disconect_all!
       @listeners.each { |l| l.socket.close }
-      puts "\nBye!"
+      @threads.map &:kill
+      Base.logger.info "\n \\o/ Bye! \\o/"
+    rescue IOError
+    ensure
       exit
     end
   end

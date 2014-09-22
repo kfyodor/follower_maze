@@ -3,11 +3,10 @@ module FollowerMaze
     def listen
       loop do
         begin
-          Thread.new(socket.accept) do |conn|
-            user_id = conn.gets(DELIMITER).strip.to_i
-            Base.connected_users << UserConnection.new(conn, user_id)
-            puts "User #{user_id} connected!"
-          end
+          conn = socket.accept
+          user_id = conn.readline.strip.encode("UTF-8").to_i
+          Base.connections << ClientConnection.new(conn, user_id)
+          Base.logger.debug "User #{user_id} connected!"
         rescue Errno::EBADF, IOError
           break
         end

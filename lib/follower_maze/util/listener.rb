@@ -4,7 +4,7 @@ module FollowerMaze
       def initialize(options = {}) 
         @port   = options[:port] || '3000'
         @host   = options[:host] || '0.0.0.0'
-        @mutex  = Mutex.new
+        $mutex  = Mutex.new
       end
 
       def listen

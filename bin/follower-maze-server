@@ -2,5 +2,7 @@
 
 require_relative '../lib/follower_maze.rb'
 
+
+
 server = FollowerMaze::Base.new
 server.run!

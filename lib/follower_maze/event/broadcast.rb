@@ -2,11 +2,7 @@ module FollowerMaze
   class Event
     class Broadcast < Event
       def destination
-        Base.connected_users
-      end
-
-      def multiple?
-        true
+        User.all
       end
     end
   end
