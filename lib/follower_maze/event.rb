@@ -22,13 +22,11 @@ module FollowerMaze
     end
 
     def initialize(payload, id, type, from, to)
-      @payload   = payload
-      @id        = id.to_i
-      @type      = type
-      @from      = from.to_i
-      @to        = to.to_i
-
-      @mutex = Mutex.new
+      @payload = payload
+      @id      = id.to_i
+      @type    = type
+      @from    = from.to_i
+      @to      = to.to_i
 
       raise_if_called_from_abstract!
     end
@@ -53,7 +51,7 @@ module FollowerMaze
     end
 
     def build_notifications
-      [destination].flatten.map do |user|
+      destination.map do |user|
         before_notify(user)
         Notification.new(self, user.id)
       end

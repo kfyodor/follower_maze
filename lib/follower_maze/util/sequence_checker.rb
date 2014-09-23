@@ -11,16 +11,14 @@ module FollowerMaze
       def_delegators :@sequence, :size
 
       def initialize(first = 1, opts = {})
-        @sequence = SortedSet.new
+        @sequence = java.util.TreeMap.new
         @first = first
         @mutex = Mutex.new
         @identity_method = opts[:identity_method] || :id
       end
 
       def <<(item)
-        @mutex.synchronize do
-          @sequence << item
-        end
+        @sequence.put item.send(@identity_method), item
       end
 
       def next
@@ -33,22 +31,16 @@ module FollowerMaze
       end
 
       def max_id
-        @sequence.max.send @identity_method
+        @sequence.last_key
       end
 
       def min_id
-        @sequence.min.send @identity_method
+        @sequence.first_key
       end
 
       def data
-        @sequence
+        @sequence.values
       end
-
-      private
-
-      # def identity
-      #   tap
-      # end
     end
   end
 end

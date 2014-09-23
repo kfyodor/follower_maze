@@ -1,9 +1,9 @@
 module FollowerMaze
   class Dispatcher
+    attr_reader :notifications_built, :notifications_sent
     def initialize
-      @sequence_checker     = Util::SequenceChecker.new
-      @notifications_buffer = {}
-      @thread_pool          = ThreadPool.new
+      @sequence_checker = Util::SequenceChecker.new
+      @thread_pool      = ThreadPool.new
     end
 
     def <<(event)
@@ -19,25 +19,25 @@ module FollowerMaze
 
     def reset!
       @sequence_checker = @sequence_checker.next
-      @notifications_buffer.clear
     end
 
     def build_notifications
-      events.map(&:build_notifications).flatten.each do |n|
-        @notifications_buffer[n.to] = (@notifications_buffer[n.to] || SortedSet.new) << n
+      events.reduce(NotificationsBuffer.new) do |buffer, event|
+        buffer.tap do |b|
+          event.build_notifications.each { |n| b << n }
+        end
       end
     end
 
     def flush!
-      build_notifications
-
-      @notifications_buffer.each do |_, notifications|
-        @thread_pool.add_work(notifications) do |n|
-          notifications.each &:handle!
+      build_notifications.each do |k, notifications|
+        @thread_pool.add_work(notifications, user_id: k) do |queue|
+          until queue.empty?
+            queue.poll.handle!
+          end
         end
       end
       @thread_pool.work
-
       reset!
     end
   end

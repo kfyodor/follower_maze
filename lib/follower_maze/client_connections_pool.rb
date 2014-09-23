@@ -4,6 +4,10 @@ module FollowerMaze
   class ClientConnectionsPool
     extend Forwardable
 
+    class << self
+      @@connections = []
+    end
+
     def_delegators :@connections, :keys, :size, :values, :[]
 
     def initialize
@@ -19,9 +23,9 @@ module FollowerMaze
     end
 
     def <<(connection)
-      $mutex.synchronize do
+      # $mutex.synchronize do
         @connections[connection.user_id] = connection
-      end
+      # end
     end
 
     def find_by_user_id(user_id)

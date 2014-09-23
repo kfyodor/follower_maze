@@ -1,7 +1,7 @@
 module FollowerMaze
   class Notification
     attr_reader :to, :event
-
+    
     def initialize(event, to)
       @event   = event
       @to      = to

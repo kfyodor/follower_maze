@@ -13,7 +13,6 @@ module FollowerMaze
     end
 
     def write(data)
-      # IO.select(nil, [@socket])
       @socket.puts(data)
     rescue Errno::EPIPE => e
       raise

@@ -2,31 +2,31 @@ module FollowerMaze
   class ThreadPool
     # my lame thread pool
     def initialize
-      @concurrency = 40
+      @concurrency = 25 # should be in config
       @mutex = Mutex.new
       @threads = []
+      @working = []
+      # @cond    = ConditionVariable.new
       @waiting = Queue.new
-
-      work
     end
 
-    def add_work context, &block
+    def add_work(context, options = {}, &block)
       raise unless block_given?
-      @waiting.push [context, block]
+      @waiting.enq [context, block, options]
     end
 
     def work
       while @waiting.size > 0
-        context, block = @waiting.pop
-        @threads << Thread.new(context, &block)
+        @threads << Thread.new(@waiting.pop) do |w|
+          context, block, options = w
+          block.call context
+        end
 
         if @threads.size == @concurrency
           @threads.each &:join
           @threads = []
         end
       end
-
-      @threads.each &:join
     end
   end
 end

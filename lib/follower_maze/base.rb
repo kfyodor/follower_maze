@@ -1,8 +1,12 @@
+require 'ruby-mass'
+
 module FollowerMaze
   class Base
+    @@connections = FollowerMaze::ClientConnectionsPool.new
+
     class << self
       def connections
-        @connections ||= FollowerMaze::ClientConnectionsPool.new
+        @@connections
       end
 
       def logger

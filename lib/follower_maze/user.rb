@@ -54,5 +54,9 @@ module FollowerMaze
         @followers.delete(user_id)
       end
     end
+
+    def map(&block)
+      [block.call(self)]
+    end
   end
 end

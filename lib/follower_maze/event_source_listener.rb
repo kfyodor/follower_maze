@@ -6,7 +6,6 @@ module FollowerMaze
     end
 
     def listen
-      sleep 0.2
       loop do
         begin
           Base.logger.info "====> Event source listener is ready to accept new connections."
