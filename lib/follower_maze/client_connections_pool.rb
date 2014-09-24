@@ -11,7 +11,7 @@ module FollowerMaze
     def_delegators :@connections, :keys, :size, :values, :[]
 
     def initialize
-      @connections = {}
+      @connections = java.util.HashMap.new
     end
 
     def each &block
@@ -34,7 +34,7 @@ module FollowerMaze
 
     def disconect_all!
       @connections.values.map &:disconnect
-      @connections = {}
+      @connections = java.util.HashMap.new
     end
   end
 end

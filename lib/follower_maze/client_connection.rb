@@ -13,7 +13,7 @@ module FollowerMaze
     end
 
     def write(data)
-      @socket.puts(data)
+      @socket.write_nonblock("#{data}\r\n")
     rescue Errno::EPIPE => e
       raise
     end

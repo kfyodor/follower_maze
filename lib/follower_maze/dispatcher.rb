@@ -4,6 +4,8 @@ module FollowerMaze
     def initialize
       @sequence_checker = Util::SequenceChecker.new
       @thread_pool      = ThreadPool.new
+
+      @thread_pool.run
     end
 
     def <<(event)
@@ -37,7 +39,7 @@ module FollowerMaze
           end
         end
       end
-      @thread_pool.work
+
       reset!
     end
   end
