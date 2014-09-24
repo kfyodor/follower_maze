@@ -1,12 +1,11 @@
 module FollowerMaze
   class Event
     class Dispatcher
-      attr_reader :notifications_built, :notifications_sent
       def initialize
         @sequence_checker = Util::SequenceChecker.new
-        @thread_pool      = ThreadPool.new
+        @notifications    = Queue.new
 
-        @thread_pool.run
+        start
       end
 
       def <<(event)
@@ -24,21 +23,24 @@ module FollowerMaze
         @sequence_checker = @sequence_checker.next
       end
 
-      def build_notifications
-        events.reduce(Notification::Buffer.new) do |buffer, event|
-          buffer.tap do |b|
-            event.build_notifications.each { |n| b << n }
+      def add(notification)
+        @notifications << notification
+      end
+
+      def start
+        Thread.new do
+          loop do
+            @notifications.deq.handle!
           end
         end
       end
 
       def flush!
-        build_notifications.each do |k, notifications|
-          @thread_pool.add_work(notifications, k) do |queue|
-            until queue.empty?
-              queue.poll.handle!
-            end
-          end
+        events.map do |event|
+          event.build_notifications.each { |n| add n }
+          # buffer.tap do |b|
+          #   event.build_notifications.each { |n| b << n }
+          # end
         end
 
         reset!

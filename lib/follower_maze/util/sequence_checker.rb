@@ -13,7 +13,6 @@ module FollowerMaze
       def initialize(first = 1, opts = {})
         @sequence = java.util.TreeMap.new
         @first = first
-        @mutex = Mutex.new
         @identity_method = opts[:identity_method] || :id
       end
 

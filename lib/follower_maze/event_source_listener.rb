@@ -11,10 +11,11 @@ module FollowerMaze
           Base.logger.info "====> Event source listener is ready to accept new connections."
           conn = socket.accept
 
-          until conn.eof? do
-            data = conn.readline.strip.encode("UTF-8")
+          until conn.eof?
+            data = conn.readline.strip
             @dispatcher << Event.from_payload(data)
           end
+
           Base.logger.info "====> Event source disconnected."
         rescue Errno::EBADF, IOError
           Base.logger.error "Connection error."
