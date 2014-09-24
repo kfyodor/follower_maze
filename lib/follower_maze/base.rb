@@ -34,6 +34,7 @@ module FollowerMaze
 
     def do_exit
       Base.logger.info "Shutting down..."
+      
       self.class.connections.disconect_all!
       @listeners.each { |l| l.socket.close }
       @threads.map &:kill

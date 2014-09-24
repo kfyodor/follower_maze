@@ -1,6 +1,6 @@
 #! /bin/bash
 
-export totalEvents=100000
+export totalEvents=1000000
 
 export logLevel=info
 export randomSeed=661

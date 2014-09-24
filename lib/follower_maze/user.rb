@@ -45,15 +45,11 @@ module FollowerMaze
     end
 
     def add_follower(user_id)
-      @mutex.synchronize do
-        @followers << user_id
-      end
+      @followers << user_id
     end
 
     def remove_follower(user_id)
-      @mutex.synchronize do
-        @followers.delete(user_id)
-      end
+      @followers.delete(user_id)
     end
 
     def map(&block)

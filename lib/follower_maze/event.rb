@@ -31,11 +31,11 @@ module FollowerMaze
     end
 
     def from_user
-      @from_user ||= User.find_or_create(from) if from
+      User.find_or_create(from) if from
     end
 
     def to_user
-      @to_user ||= User.find_or_create(to) if to
+      User.find_or_create(to) if to
     end
 
     def compareTo(event)

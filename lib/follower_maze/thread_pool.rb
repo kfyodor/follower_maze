@@ -16,8 +16,7 @@ module FollowerMaze
     def spawn_thread
       Thread.new do
         loop do
-          context, block, id = get_work
-
+          context, block, id = @mutex.synchronize { get_work }
           @mutex.synchronize do
             @working[id] = true
           end
@@ -39,15 +38,15 @@ module FollowerMaze
 
     # do we need this?
     def get_work(put_back = nil)
-      work  = @waiting.pop
-      id    = work[2]
+      work = @waiting.pop
+      id   = work[2]
 
       @waiting.push put_back if put_back
 
       if @working[id]
         get_work(work)
       else
-        return work
+        work
       end
     end
   end
