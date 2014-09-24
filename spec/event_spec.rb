@@ -5,18 +5,18 @@ describe FollowerMaze::Event do
     subject { described_class }
 
     class TestEvent < described_class
-      attr_reader :before_called
+      attr_accessor :before_called
 
       def initialize(*args)
         @before_called = 0
         super *args
       end
 
-      def before_notify(_)
-        @before_called += 1
+      before_notification do |_, event|
+        event.before_called += 1
       end
 
-      def destination
+      deliver_notifications_to do |_|
         FollowerMaze::User.all
       end
     end
@@ -48,21 +48,15 @@ describe FollowerMaze::Event do
       let(:user_class) { FollowerMaze::User }
       let(:users) { [user_class.new(1), user_class.new(2), user_class.new(3)] }
 
-      context 'destination' do
-        before(:each) do
+      context 'attrs' do
+        it 'has correct recipients' do
           user_class.should_receive(:all).and_return(users)
+          expect(subject.deliver_to).to eq users
         end
 
-        it { is_expected.to have_attributes({ destination: users }) }
-      end
-
-      context 'users' do
-        before(:each) do
-          user_class.should_receive(:find_or_create).and_return(users.first)
+        it 'has correct notify?' do
+          expect(subject.notify?).to eq true
         end
-
-        it { is_expected.to have_attributes({ to_user: users.first })}
-        it { is_expected.to have_attributes({ from_user: users.first })}
       end
 
       context 'building notifications' do

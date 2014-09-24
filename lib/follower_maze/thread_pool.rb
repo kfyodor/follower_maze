@@ -3,7 +3,7 @@ module FollowerMaze
     attr_reader :working, :waiting
 
     def initialize
-      @concurrency = 10
+      @concurrency = 1
       @mutex   = Mutex.new
       @working = {}
       @waiting = Queue.new

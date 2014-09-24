@@ -12,6 +12,8 @@ module FollowerMaze
 
     class << self
       def inherited(klass)
+        klass.send :include, DSL
+
         klass_name = klass.name
         type_id    = klass_name.split('::').last[0]
 
@@ -28,6 +30,14 @@ module FollowerMaze
       end
     end
 
+    def from_user
+      @from_user ||= User.find_or_create(from) if from
+    end
+
+    def to_user
+      @to_user ||= User.find_or_create(to) if to
+    end
+
     def compareTo(event)
       self.id <=> event.id
     end
@@ -42,34 +52,11 @@ module FollowerMaze
       raise_if_called_from_abstract!
     end
 
-    def notify?
-      true
-    end
-
-    def destination
-      default_destination
-    end
-
-    def before_notify(user)
-    end
-
-    def notification_sent(user)
-      Base.logger.debug "Sent #{self.class.name.split('::').last} to #{user.id}"
-    end
-
     def build_notifications
-      destination.map do |user|
-        before_notify(user)
+      deliver_to.map do |user|
+        run_before_notification_callbacks(user)
         Notification.new(self, user.id)
       end
-    end
-
-    def to_user
-      User.find_or_create(@to) if @to
-    end
-
-    def from_user
-      User.find_or_create(@from) if @from
     end
 
     private
@@ -90,6 +77,6 @@ module FollowerMaze
   end
 end
 
-Dir[File.expand_path(File.dirname(__FILE__)) + "/event" + "/*.rb"].each do |f|
+Dir[File.expand_path(File.dirname(__FILE__)) + "/event/types" + "/*.rb"].each do |f|
   require f
 end

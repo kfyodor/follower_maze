@@ -1,6 +1,6 @@
 module FollowerMaze
   module Util
-    class Listener
+    class Server
       def initialize(options = {}) 
         @port   = options[:port] || '3000'
         @host   = options[:host] || '0.0.0.0'

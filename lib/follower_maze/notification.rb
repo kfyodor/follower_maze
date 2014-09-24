@@ -17,8 +17,14 @@ module FollowerMaze
     def handle!
       if @to_user
         @to_user.notify(@event.payload) if @event.notify?
-        @event.notification_sent @to_user
+        log_notification_sent
       end
+    end
+
+    private
+
+    def log_notification_sent
+      Base.logger.debug "Sent #{@event.class.name.split('::').last} to #{@to_user.id}"
     end
   end
 end

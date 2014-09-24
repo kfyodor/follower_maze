@@ -2,7 +2,7 @@ require 'ruby-mass'
 
 module FollowerMaze
   class Base
-    @@connections = FollowerMaze::ClientConnectionsPool.new
+    @@connections = User::ConnectionPool.new
 
     class << self
       def connections

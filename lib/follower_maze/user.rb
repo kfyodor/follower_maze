@@ -29,9 +29,10 @@ module FollowerMaze
     end
 
     def initialize(id, attrs = {})
-      @id = id
+      @id        = id
       @followers = []
-      @mutex = Mutex.new
+      @mutex     = Mutex.new
+
       @mutex.synchronize { @@users[@id] = self }
     end
 

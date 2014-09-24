@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe FollowerMaze::NotificationsBuffer do
+RSpec.describe FollowerMaze::Notification::Buffer do
   subject { described_class.new }
 
   let(:event1) { double("FollowerMaze::Event", id: 1) }

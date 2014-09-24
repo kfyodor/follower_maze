@@ -1,7 +1,7 @@
 module FollowerMaze
-  class EventSourceListener < Util::Listener
+  class EventSourceListener < Util::Server
     def initialize(*args)
-      @dispatcher = FollowerMaze::Dispatcher.new
+      @dispatcher = Event::Dispatcher.new
       super(*args)
     end
 
