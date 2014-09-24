@@ -2,6 +2,8 @@
 
 module FollowerMaze
   class Event
+    include java.lang.Comparable
+
     attr_reader :id, :type, :to, :from, :payload
 
     @@types = {}
@@ -21,6 +23,10 @@ module FollowerMaze
       end
     end
 
+    def compareTo(event)
+      self.id <=> event.id
+    end
+
     def initialize(payload, id, type, from, to)
       @payload = payload
       @id      = id.to_i
@@ -29,10 +35,6 @@ module FollowerMaze
       @to      = to.to_i
 
       raise_if_called_from_abstract!
-    end
-
-    def <=>(event)
-      self.id <=> event.id
     end
 
     def notify?

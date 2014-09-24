@@ -31,7 +31,7 @@ module FollowerMaze
 
     def flush!
       build_notifications.each do |k, notifications|
-        @thread_pool.add_work(notifications, user_id: k) do |queue|
+        @thread_pool.add_work(notifications, k) do |queue|
           until queue.empty?
             queue.poll.handle!
           end
