@@ -16,7 +16,4 @@ describe FollowerMaze::ThreadPool do
     it 'gets work'
     it 'gets another work if id is in working'
   end
-
-  it 'keeps limited amount of threads'
-
 end

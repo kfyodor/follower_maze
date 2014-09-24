@@ -1,11 +1,9 @@
 module FollowerMaze
   class ThreadPool
-    # my lame thread pool
-
     attr_reader :working, :waiting
 
     def initialize
-      @concurrency = 1
+      @concurrency = 10
       @mutex   = Mutex.new
       @working = {}
       @waiting = Queue.new

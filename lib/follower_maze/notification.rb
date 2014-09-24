@@ -17,7 +17,7 @@ module FollowerMaze
     def handle!
       if @to_user
         @to_user.notify(@event.payload) if @event.notify?
-        @event.after_notify @to_user
+        @event.notification_sent @to_user
       end
     end
   end

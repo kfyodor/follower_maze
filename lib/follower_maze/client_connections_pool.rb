@@ -11,7 +11,8 @@ module FollowerMaze
     def_delegators :@connections, :keys, :size, :values, :[]
 
     def initialize
-      @connections = java.util.HashMap.new
+      @connections = {}
+      @mutex       = Mutex.new
     end
 
     def each &block
@@ -23,9 +24,7 @@ module FollowerMaze
     end
 
     def <<(connection)
-      # $mutex.synchronize do
-        @connections[connection.user_id] = connection
-      # end
+      @connections[connection.user_id] = connection
     end
 
     def find_by_user_id(user_id)
@@ -34,7 +33,7 @@ module FollowerMaze
 
     def disconect_all!
       @connections.values.map &:disconnect
-      @connections = java.util.HashMap.new
+      @connections = {}
     end
   end
 end

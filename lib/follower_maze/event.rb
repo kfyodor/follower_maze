@@ -2,6 +2,8 @@
 
 module FollowerMaze
   class Event
+    class AbstractClassError < Exception; end
+
     include java.lang.Comparable
 
     attr_reader :id, :type, :to, :from, :payload
@@ -9,7 +11,6 @@ module FollowerMaze
     @@types = {}
 
     class << self
-
       def inherited(klass)
         klass_name = klass.name
         type_id    = klass_name.split('::').last[0]
@@ -20,6 +21,10 @@ module FollowerMaze
       def from_payload(payload)
         id, type, from, to = payload.split('|')
         @@types[type].new(payload, id, type, from, to)
+      end
+
+      def types
+        @@types
       end
     end
 
@@ -48,7 +53,7 @@ module FollowerMaze
     def before_notify(user)
     end
 
-    def after_notify(user)
+    def notification_sent(user)
       Base.logger.debug "Sent #{self.class.name.split('::').last} to #{user.id}"
     end
 
@@ -79,7 +84,7 @@ module FollowerMaze
 
     def raise_if_called_from_abstract!
       unless types.values.include?(self.class)
-        raise "FollowerMaze::Event is an abstract class."
+        raise AbstractClassError
       end
     end
   end
