@@ -30,12 +30,15 @@ module FollowerMaze
           end
         end
 
-        if @working.size == @concurrency
-          @working.values.map &:join
+        @mutex.synchronize do
+          if @working.size == @concurrency
+            @working.values.map &:join
+          end
         end
       end
     end
 
+    # do we need this?
     def get_work_for(thread, put_back = nil)
       work  = @waiting.pop
       id    = work[2]
