@@ -3,14 +3,23 @@ module FollowerMaze
     class Dispatcher
       def initialize
         @sequence_checker = Util::SequenceChecker.new
-        @notifications    = Queue.new
-
-        start
+        @buffer           = Queue.new
+        @consumer         = nil
       end
 
       def <<(event)
         @sequence_checker << event
         flush! if @sequence_checker.complete?
+      end
+
+      def start
+        @consumer = Thread.new do
+          loop { @buffer.pop.handle! }
+        end
+      end
+
+      def stop
+        @consumer.kill
       end
 
       private
@@ -19,31 +28,18 @@ module FollowerMaze
         @sequence_checker.data
       end
 
-      def reset!
-        @sequence_checker = @sequence_checker.next
-      end
+      def flush!
+        events.each do |event|
+          if event.has_side_effects?
+            event.before_callback 
+          end
 
-      def add(notification)
-        @notifications << notification
-      end
-
-      def start
-        Thread.new do
-          loop do
-            @notifications.deq.handle!
+          event.build_notifications do |n|
+            @buffer << n
           end
         end
-      end
 
-      def flush!
-        events.map do |event|
-          event.build_notifications.each { |n| add n }
-          # buffer.tap do |b|
-          #   event.build_notifications.each { |n| b << n }
-          # end
-        end
-
-        reset!
+        @sequence_checker = @sequence_checker.next
       end
     end
   end

@@ -10,7 +10,8 @@ module FollowerMaze
 
           Base.logger.debug "User #{user_id} connected!"
         rescue Errno::EBADF, IOError
-          break
+          Base.logger.error "Event listener connection error."
+          next
         end
       end
     end

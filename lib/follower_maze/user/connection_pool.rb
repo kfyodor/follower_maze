@@ -5,13 +5,10 @@ module FollowerMaze
     class ConnectionPool
       extend Forwardable
 
-      @@connections = []
-
       def_delegators :@connections, :keys, :size, :values, :[]
 
       def initialize
         @connections = {}
-        @mutex       = Mutex.new
       end
 
       def each &block

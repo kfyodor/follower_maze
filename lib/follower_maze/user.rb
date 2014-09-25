@@ -23,7 +23,7 @@ module FollowerMaze
 
       def find_or_create(id)
         @@users.fetch(id) do
-          $mutex.synchronize { new(id) }
+          new(id)
         end
       end
     end
@@ -31,9 +31,8 @@ module FollowerMaze
     def initialize(id, attrs = {})
       @id        = id
       @followers = []
-      @mutex     = Mutex.new
 
-      @mutex.synchronize { @@users[@id] = self }
+      @@users[@id] = self
     end
 
     def notify(data)
@@ -52,8 +51,17 @@ module FollowerMaze
       @followers.delete(user_id)
     end
 
+    def each(&block)
+      map &block
+      nil
+    end
+
     def map(&block)
       [block.call(self)]
+    end
+
+    def any?
+      true
     end
   end
 end

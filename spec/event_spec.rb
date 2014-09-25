@@ -12,11 +12,11 @@ describe FollowerMaze::Event do
         super *args
       end
 
-      before_notification do |_, event|
-        event.before_called += 1
+      def before_notification
+        @before_called += 1
       end
 
-      deliver_notifications_to do |_|
+      def deliver_to
         FollowerMaze::User.all
       end
     end
@@ -62,16 +62,18 @@ describe FollowerMaze::Event do
       context 'building notifications' do
         it 'calls before hook destination.size times' do
           expect do
-            subject.build_notifications
-          end.to change(subject, :before_called).by 3
+            subject.before_notification
+          end.to change(subject, :before_called).by 1
         end
 
         it 'builds notifications' do
+          buffer = []
+          subject.build_notifications do |n|
+            buffer << n
+          end
           expect(
-            subject.build_notifications.map do |n|
-              [n.to, n.event]
-            end
-          ).to eq [[1, subject], [2, subject], [3, subject]]
+            buffer.map {|n| n.to_user.id }
+          ).to eq [1, 2, 3]
         end
       end
     end

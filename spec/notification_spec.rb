@@ -11,12 +11,12 @@ describe FollowerMaze::Notification do
   let(:notification1) { described_class.new event1, 2 }
   let(:notification2) { described_class.new event2, 1 }
 
-  it 'compares notifications' do
-    expect(notification1 < notification2).to  eq true
-    expect(notification1 <= notification2).to eq true
-    expect(notification1 > notification2).to  eq false
-    expect(notification1 >= notification2).to eq false
-    expect(notification1 == notification2).to eq false
-    expect(notification1 <=> notification2).to eq -1
-  end
+  # it 'compares notifications' do
+  #   expect(notification1 < notification2).to  eq true
+  #   expect(notification1 <= notification2).to eq true
+  #   expect(notification1 > notification2).to  eq false
+  #   expect(notification1 >= notification2).to eq false
+  #   expect(notification1 == notification2).to eq false
+  #   expect(notification1 <=> notification2).to eq -1
+  # end
 end

@@ -2,10 +2,12 @@ module FollowerMaze
   class Event
     module Types
       class Unfollow < Event
-        notify false
+        def notify?
+          false
+        end
 
-        before_notification do |to_user, event|
-          to_user.remove_follower event.from
+        def before_callback
+          to_user.remove_follower from
         end
       end
     end

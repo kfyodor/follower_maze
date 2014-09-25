@@ -12,8 +12,6 @@ module FollowerMaze
 
     class << self
       def inherited(klass)
-        klass.send :include, DSL
-
         klass_name = klass.name
         type_id    = klass_name.split('::').last[0]
 
@@ -31,11 +29,11 @@ module FollowerMaze
     end
 
     def from_user
-      User.find_or_create(from) if from
+      @from_user ||= User.find_or_create(from) if from
     end
 
     def to_user
-      User.find_or_create(to) if to
+      @to_user ||= User.find_or_create(to) if to
     end
 
     def compareTo(event)
@@ -52,18 +50,30 @@ module FollowerMaze
       raise_if_called_from_abstract!
     end
 
-    def build_notifications
-      deliver_to.map do |user|
-        run_before_notification_callbacks(user)
-        Notification.new(self, user.id)
+    def deliver_to
+      to_user
+    end
+
+    def build_notifications &block
+      case d = deliver_to
+      when User
+        block.call Notification.new(self, d)
+      else
+        d.map do |user|
+          block.call Notification.new(self, user)
+        end
       end
     end
 
-    private
-
-    def default_destination
-      to_user
+    def has_side_effects?
+      defined?(before_callback)
     end
+
+    def notify?
+      true
+    end
+
+    private
 
     def types
       self.class.class_variable_get(:@@types)

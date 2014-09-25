@@ -1,24 +1,15 @@
 module FollowerMaze
   class Notification
-    include java.lang.Comparable
-
-    attr_reader :to, :event
+    attr_reader :to_user, :event
     
-    def initialize(event, to)
+    def initialize(event, to_user)
       @event   = event
-      @to      = to
-      @to_user = User.find(to)
-    end
-
-    def compareTo(notification)
-      self.event.id <=> notification.event.id
+      @to_user = to_user
     end
 
     def handle!
-      if @to_user
-        @to_user.notify(@event.payload) if @event.notify?
-        log_notification_sent
-      end
+      @to_user.notify(@event.payload) if @event.notify?
+      log_notification_sent
     end
 
     private
