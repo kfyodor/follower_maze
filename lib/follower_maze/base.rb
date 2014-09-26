@@ -6,23 +6,19 @@ module FollowerMaze
 
     class << self
       def connections; @@connections; end
-
-      def logger
-        @logger ||= Util::Logger.new
-      end
     end
 
     def initialize
       @listeners = [].tap do |l|
-        l << ClientsListener.new(port: CLIENTS_PORT)
-        l << EventSourceListener.new(port: EVENT_SOURCE_PORT)
+        l << ClientsListener.new
+        l << EventSourceListener.new
       end
     end
 
     def run!
       trap(:INT) { do_exit }
 
-      Base.logger.info "====> Starting server"
+      $logger.info "====> Starting server"
 
       @running = @listeners.map do |l|
         Thread.new { l.listen }
@@ -32,7 +28,7 @@ module FollowerMaze
     private
 
     def do_exit
-      Base.logger.info "Shutting down..."
+      $logger.info "Shutting down..."
       
       self.class.connections.disconect_all!
 
@@ -40,7 +36,7 @@ module FollowerMaze
       @running.map &:kill
     rescue IOError
     ensure
-      Base.logger.info "\\o/ Bye! \\o/"
+      $logger.info "\\o/ Bye! \\o/"
       exit
     end
   end

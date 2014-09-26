@@ -16,7 +16,7 @@ module FollowerMaze
       def write(data)
         @socket.write("#{data}\r\n")
       rescue Errno::EPIPE, IOError => e
-        Base.logger.error "Error while writing #{data} to user #{@user.id}"
+        $logger.error "Error while writing #{data} to user #{@user.id}"
       end
     end
   end

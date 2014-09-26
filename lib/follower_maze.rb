@@ -6,6 +6,7 @@ $:.unshift lib unless $:.include?(lib)
 require 'thread'
 require 'socket'
 
+require 'follower_maze/config'
 require 'follower_maze/util/server'
 require 'follower_maze/util/sequence_checker'
 require 'follower_maze/util/logger'
@@ -24,10 +25,18 @@ require 'follower_maze/base'
 require 'follower_maze/event/dispatcher'
 require 'follower_maze/event'
 
-
 module FollowerMaze
-  EVENT_SOURCE_PORT = 9090
-  CLIENTS_PORT      = 9099
+  extend self
+
+  def configure &block
+    yield Config
+  end
+
+  def config
+    Config
+  end
+
+  $logger = Util::Logger.new
 
   Thread.abort_on_exception = true
 end

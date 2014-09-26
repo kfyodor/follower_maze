@@ -1,6 +1,12 @@
 #!/usr/bin/env jruby
-
 require_relative '../lib/follower_maze.rb'
+
+FollowerMaze.configure do |c|
+  ARGV.each do |option|
+    k, v = option.split "="
+    c.send "#{k}=", v
+  end
+end
 
 server = FollowerMaze::Base.new
 server.run!

@@ -1,5 +1,12 @@
 module FollowerMaze
-  class ClientsListener < Util::Server
+  class ClientsListener
+    include Util::Server
+
+    def initialize
+      @port = FollowerMaze.config.clients_port
+      @host = FollowerMaze.config.clients_host
+    end
+
     def listen
       loop do
         begin
@@ -8,9 +15,10 @@ module FollowerMaze
 
           Base.connections << User::Connection.new(conn, user_id)
 
-          Base.logger.debug "User #{user_id} connected!"
+          $logger.debug "User #{user_id} connected!"
         rescue Errno::EBADF, IOError
-          Base.logger.error "Event listener connection error."
+          Base.connections.disconnect!
+          $logger.error "Event listener connection error."
           next
         end
       end

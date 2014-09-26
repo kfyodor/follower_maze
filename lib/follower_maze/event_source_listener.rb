@@ -1,10 +1,13 @@
 module FollowerMaze
-  class EventSourceListener < Util::Server
+  class EventSourceListener
+    include Util::Server
+
     attr_reader :dispatcher
 
-    def initialize(*args)
+    def initialize
       @dispatcher = Event::Dispatcher.new
-      super(*args)
+      @port       = FollowerMaze.config.event_source_port
+      @host       = FollowerMaze.config.event_source_host
     end
 
     def stop
@@ -16,28 +19,24 @@ module FollowerMaze
       @dispatcher.start
 
       loop do
-        Base.logger.info "====> Event source listener is ready to accept new connections."
+        $logger.info "====> Event source listener is ready to accept new connections on port #{port}."
 
         begin
           conn = socket.accept
 
           until conn.eof?
-            data = conn.readline.strip
-            @dispatcher << Event.from_payload(data)
+            @dispatcher << Event.from_payload(conn.readline.strip)
           end
 
         rescue Errno::EBADF, IOError
-          Base.logger.error "Event listener connection error."
-          next
-        ensure
-          ### this is only for test purposes
-          # @dispatcher.stop
-          # @dispatcher = Event::Dispatcher.new
-          # User.class_variable_set :@@users, {}
-          # Base.connections.disconnect_all!
-          # @dispatcher.start
+          $logger.error "Event listener connection error."
+          next # won't work if you repeat the provided test
+               # without restarting the server
+               # because in real life we can't go back in time,
+               # delete all followers from the database
+               # and regenerate events
         end
-        Base.logger.info "====> Event source disconnected."
+        $logger.info "====> Event source disconnected."
       end
     end
   end
