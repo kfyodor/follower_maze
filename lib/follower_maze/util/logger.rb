@@ -3,18 +3,25 @@ module FollowerMaze
     class Logger
       LEVELS = [:debug, :info, :error]
 
-      attr_writer :logger_level, :logger_output
+      attr_writer :logger_level
 
       def initialize(config = FollowerMaze::Config)
+        $stdout.sync = true
         @config = config
       end
 
       def logger_level
-        @logger_level || @config.logger_level
+        @logger_level ||= @config.logger_level
       end
 
       def logger_output
-        @logger_output || @config.logger_output
+        @logger_output ||= self.logger_output=(@config.logger_output)
+      end
+
+      def logger_output=(out)
+        @logger_output = File.open(out, "w").tap do |f|
+          f.sync = true
+        end
       end
 
       LEVELS.each.with_index do |l, i|

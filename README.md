@@ -5,7 +5,18 @@
 To run the app you should have Java and jRuby installed (I'm sure you have) in your system.
 
 ```bash
-  ./bin/follower-maze-server
+  ./bin/follower-maze-server config1=value config2=value
+```
+
+Available config options:
+
+```bash
+  logger_level      -> error | debug | info (default)
+  logger_output     -> Full path to log file (default: $stdout)
+  event_source_port -> 9090 is default
+  event_source_host -> '0.0.0.0' is default
+  clients_port      -> 9099 is default
+  clients_host      -> '0.0.0.0'
 ```
 
 ### Testing

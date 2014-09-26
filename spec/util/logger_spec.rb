@@ -6,7 +6,7 @@ describe FollowerMaze::Util::Logger do
   let(:out) { StringIO.new }
 
   before(:each) do
-    subject.logger_output = out
+    subject.instance_variable_set(:@logger_output, out)
   end
 
   it 'initializes with config' do
