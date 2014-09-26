@@ -17,7 +17,7 @@ Run RSpec test suite:
   rspec
 ```
 
-Run provider .jar test:
+Run provided .jar test:
 
 ```bash
   ./support/followermaze.sh
