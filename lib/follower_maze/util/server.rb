@@ -15,6 +15,10 @@ module FollowerMaze
           s.setsockopt(Socket::IPPROTO_TCP, Socket::TCP_NODELAY, 1)
         end
       end
+
+      def close
+        @socket.close
+      end
     end
   end
 end

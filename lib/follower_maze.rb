@@ -28,7 +28,6 @@ require 'follower_maze/event'
 module FollowerMaze
   EVENT_SOURCE_PORT = 9090
   CLIENTS_PORT      = 9099
-  DELIMITER         = $/
 
   Thread.abort_on_exception = true
 end

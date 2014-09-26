@@ -6,7 +6,7 @@ module FollowerMaze
       def initialize(socket, user_id)
         @socket  = socket
         @user_id = user_id
-        @user    = User.new(user_id)
+        @user    = User.new(user_id, connection: self)
       end
 
       def disconnect
@@ -15,8 +15,8 @@ module FollowerMaze
 
       def write(data)
         @socket.write("#{data}\r\n")
-      rescue Errno::EPIPE => e
-        raise
+      rescue Errno::EPIPE, IOError => e
+        Base.logger.error "Error while writing #{data} to user #{@user.id}"
       end
     end
   end

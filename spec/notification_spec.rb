@@ -1,22 +1,23 @@
 require 'spec_helper'
 
 describe FollowerMaze::Notification do
-  let(:event1) { instance_double "FollowerMaze::Event", id: 1 }
-  let(:event2) { instance_double "FollowerMaze::Event", id: 2 }
+  let(:event) { instance_double "FollowerMaze::Event", id: 1, payload: "111", notify?: true }
+  let(:event_without_notify) { 
+    instance_double "FollowerMaze::Event", id: 1, payload: "111", notify?: false
+  }
 
-  before do
-    FollowerMaze::User.stub(:find).and_return(FollowerMaze::User.new 1)
+  let(:user) { FollowerMaze::User.new 1 }
+
+  let(:notification) { described_class.new event, user }
+  let(:notification2) { described_class.new event_without_notify, user }
+
+  it 'is being handled' do
+    user.should_receive(:notify).with("111")
+    notification.handle!
   end
 
-  let(:notification1) { described_class.new event1, 2 }
-  let(:notification2) { described_class.new event2, 1 }
-
-  # it 'compares notifications' do
-  #   expect(notification1 < notification2).to  eq true
-  #   expect(notification1 <= notification2).to eq true
-  #   expect(notification1 > notification2).to  eq false
-  #   expect(notification1 >= notification2).to eq false
-  #   expect(notification1 == notification2).to eq false
-  #   expect(notification1 <=> notification2).to eq -1
-  # end
+  it 'is not sent if notify false' do
+    user.should_not_receive(:notify)
+    notification2.handle!
+  end
 end

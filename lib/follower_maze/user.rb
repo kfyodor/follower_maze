@@ -14,7 +14,9 @@ module FollowerMaze
       end
 
       def find_many(ids)
-        @@users.values.select { |u| ids.include? u.id }
+        @@users.select { |k, u|
+          ids.include?(k)
+        }.values
       end
 
       def create(id, attrs = {})
@@ -31,15 +33,14 @@ module FollowerMaze
     def initialize(id, attrs = {})
       @id        = id
       @followers = []
+      @connection = attrs[:connection]
 
       @@users[@id] = self
     end
 
     def notify(data)
-      connection = Base.connections.find_by_user_id(id)
-
-      if connection
-        connection.write data
+      if @connection
+        @connection.write data
       end
     end
 
@@ -49,19 +50,6 @@ module FollowerMaze
 
     def remove_follower(user_id)
       @followers.delete(user_id)
-    end
-
-    def each(&block)
-      map &block
-      nil
-    end
-
-    def map(&block)
-      [block.call(self)]
-    end
-
-    def any?
-      true
     end
   end
 end

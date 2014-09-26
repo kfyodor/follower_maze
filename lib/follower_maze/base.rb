@@ -5,9 +5,7 @@ module FollowerMaze
     @@connections = User::ConnectionPool.new
 
     class << self
-      def connections
-        @@connections
-      end
+      def connections; @@connections; end
 
       def logger
         @logger ||= Util::Logger.new
@@ -24,11 +22,9 @@ module FollowerMaze
     def run!
       trap(:INT) { do_exit }
 
-      @threads = @listeners.map do |l|
+      @running = @listeners.map do |l|
         Thread.new { l.listen }
-      end
-
-      @threads.map(&:join)
+      end.tap {|r| r.map(&:join) }
     end
 
     private
@@ -38,11 +34,8 @@ module FollowerMaze
       
       self.class.connections.disconect_all!
 
-      @listeners[1].stop
-
-      @listeners.each { |l| l.socket.close }
-
-      @threads.map &:kill
+      @listeners.map(&:close)
+      @running.map &:kill
 
       Base.logger.info "\n \\o/ Bye! \\o/"
     rescue IOError
