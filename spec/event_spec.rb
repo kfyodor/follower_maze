@@ -50,7 +50,7 @@ describe FollowerMaze::Event do
 
       context 'attrs' do
         it 'has correct recipients' do
-          user_class.should_receive(:all).and_return(users)
+          allow(user_class).to receive(:all) { users }
           expect(subject.deliver_to).to eq users
         end
 

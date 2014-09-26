@@ -54,7 +54,7 @@ describe FollowerMaze::User do
       conn = Conn.new
       user = described_class.new(1, connection: conn)
       data = "111"
-      conn.should_receive(:write).with(data)
+      expect(conn).to receive(:write).with(data)
       user.notify data
     end
   end

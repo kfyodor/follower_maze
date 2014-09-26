@@ -8,16 +8,16 @@ describe FollowerMaze::Event::Dispatcher do
   let(:sc) { subject.instance_variable_get(:@sequence_checker) }
   
   it 'adds event' do
-    sc.should_receive(:<<).with(event2)
-    sc.should_receive(:complete?).and_return false
+    expect(sc).to receive(:<<).with(event2)
+    expect(sc).to receive(:complete?) { false }
 
     subject << event2
   end
 
   it 'calls flush if sequence is complete' do
-    sc.should_receive(:complete?).and_return true
-    subject.stub(:flush!).and_return nil
-    subject.should_receive(:flush!)
+    allow(sc).to receive(:complete?) { true }
+    allow(subject).to receive(:flush!) { nil }
+    expect(subject).to receive(:flush!)
     
 
     subject << event1
@@ -46,13 +46,13 @@ describe FollowerMaze::Event::Dispatcher do
 
   context 'flush' do
     it 'flushes' do
-      sc.stub(:complete?).and_return true
-      subject.stub(:events).and_return [event2]
+      allow(sc).to receive(:complete?) { true }
+      allow(subject).to receive(:events) { [event2] }
 
-      event2.should_receive(:has_side_effects?).and_return true
-      event2.should_receive(:before_callback)
-      event2.should_receive(:build_notifications)
-      sc.should_receive(:next)
+      expect(event2).to receive(:has_side_effects?) { true }
+      expect(event2).to receive(:before_callback)
+      expect(event2).to receive(:build_notifications)
+      expect(sc).to receive(:next)
 
       subject << event2
     end

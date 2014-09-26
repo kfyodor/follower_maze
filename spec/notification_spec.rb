@@ -12,12 +12,12 @@ describe FollowerMaze::Notification do
   let(:notification2) { described_class.new event_without_notify, user }
 
   it 'is being handled' do
-    user.should_receive(:notify).with("111")
+    expect(user).to receive(:notify).with("111")
     notification.handle!
   end
 
   it 'is not sent if notify false' do
-    user.should_not_receive(:notify)
+    expect(user).not_to receive(:notify)
     notification2.handle!
   end
 end

@@ -12,6 +12,9 @@ describe FollowerMaze::User::Connection do
 
   subject { described_class.new(NullSocket.new, 1) }
 
+  let(:socket) { subject.instance_variable_get(:@socket) }
+  let(:data)   { "111" }
+
   it 'has user id' do
     expect(subject.user_id).to eq 1
   end
@@ -21,13 +24,12 @@ describe FollowerMaze::User::Connection do
   end
 
   it 'writes data' do
-    data = "111"
-    subject.instance_variable_get(:@socket).should_receive(:write).with("#{data}\r\n")
+    expect(socket).to receive(:write).with("#{data}\r\n")
     subject.write(data)
   end
 
   it 'disconnects' do
-    subject.instance_variable_get(:@socket).should_receive(:close)
+    expect(socket).to receive(:close)
     subject.disconnect
   end
 end
