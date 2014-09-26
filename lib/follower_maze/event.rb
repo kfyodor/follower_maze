@@ -28,6 +28,16 @@ module FollowerMaze
       end
     end
 
+    def initialize(payload, id, type, from, to)
+      @payload = payload
+      @id      = id.to_i
+      @type    = type
+      @from    = from.to_i
+      @to      = to.to_i
+
+      raise_if_called_from_abstract!
+    end
+
     def from_user
       @from_user ||= User.find_or_create(from) if from
     end
@@ -38,16 +48,6 @@ module FollowerMaze
 
     def compareTo(event)
       self.id <=> event.id
-    end
-
-    def initialize(payload, id, type, from, to)
-      @payload = payload
-      @id      = id.to_i
-      @type    = type
-      @from    = from.to_i
-      @to      = to.to_i
-
-      raise_if_called_from_abstract!
     end
 
     def deliver_to

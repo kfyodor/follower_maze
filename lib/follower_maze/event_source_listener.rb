@@ -25,6 +25,7 @@ module FollowerMaze
             data = conn.readline.strip
             @dispatcher << Event.from_payload(data)
           end
+
         rescue Errno::EBADF, IOError
           Base.logger.error "Event listener connection error."
           next

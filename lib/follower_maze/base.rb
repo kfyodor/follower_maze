@@ -22,6 +22,8 @@ module FollowerMaze
     def run!
       trap(:INT) { do_exit }
 
+      Base.logger.info "====> Starting server"
+
       @running = @listeners.map do |l|
         Thread.new { l.listen }
       end.tap {|r| r.map(&:join) }
@@ -36,10 +38,9 @@ module FollowerMaze
 
       @listeners.map(&:close)
       @running.map &:kill
-
-      Base.logger.info "\n \\o/ Bye! \\o/"
     rescue IOError
     ensure
+      Base.logger.info "\\o/ Bye! \\o/"
       exit
     end
   end
