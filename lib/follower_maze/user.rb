@@ -14,9 +14,7 @@ module FollowerMaze
       end
 
       def find_many(ids)
-        @@users.select { |k, u|
-          ids.include?(k)
-        }.values
+        @@users.select { |k, u| ids.include?(k) }.values
       end
 
       def create(id, attrs = {})
@@ -24,9 +22,7 @@ module FollowerMaze
       end
 
       def find_or_create(id)
-        @@users.fetch(id) do
-          new(id)
-        end
+        @@users.fetch(id) { new(id) }
       end
     end
 
@@ -39,9 +35,7 @@ module FollowerMaze
     end
 
     def notify(data)
-      if @connection
-        @connection.write data
-      end
+      @connection.write data if @connection
     end
 
     def add_follower(user_id)
