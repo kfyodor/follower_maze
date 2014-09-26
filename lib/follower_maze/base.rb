@@ -1,5 +1,3 @@
-require 'ruby-mass'
-
 module FollowerMaze
   class Base
     @@connections = User::ConnectionPool.new
