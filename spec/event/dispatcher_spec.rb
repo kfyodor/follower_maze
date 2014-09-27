@@ -49,8 +49,6 @@ describe FollowerMaze::Event::Dispatcher do
       allow(sc).to receive(:complete?) { true }
       allow(subject).to receive(:events) { [event2] }
 
-      expect(event2).to receive(:has_side_effects?) { true }
-      expect(event2).to receive(:before_callback)
       expect(event2).to receive(:build_notifications)
       expect(sc).to receive(:next)
 

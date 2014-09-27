@@ -47,6 +47,7 @@ describe FollowerMaze::Event do
 
       let(:user_class) { FollowerMaze::User }
       let(:users) { [user_class.new(1), user_class.new(2), user_class.new(3)] }
+      let(:buffer) { [] }
 
       context 'attrs' do
         it 'has correct recipients' do
@@ -67,13 +68,12 @@ describe FollowerMaze::Event do
         end
 
         it 'builds notifications' do
-          buffer = []
-          subject.build_notifications do |n|
-            buffer << n
-          end
-          expect(
-            buffer.map {|n| n.to_user.id }
-          ).to eq [1, 2, 3]
+          expect(subject).to receive(:has_side_effects?) { true }
+          expect(subject).to receive(:before_callback)
+
+          subject.build_notifications { |n| buffer << n }
+
+          expect(buffer.map {|n| n.to_user.id }).to eq [1, 2, 3]
         end
       end
     end

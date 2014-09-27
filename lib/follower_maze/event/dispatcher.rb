@@ -29,17 +29,16 @@ module FollowerMaze
       end
 
       def flush!
-        events.each do |event|
-          if event.has_side_effects?
-            event.before_callback 
-          end
+        build_notifications_from_events
+        @sequence_checker = @sequence_checker.next
+      end
 
+      def build_notifications_from_events
+        events.each do |event|
           event.build_notifications do |n|
             @buffer << n
           end
         end
-
-        @sequence_checker = @sequence_checker.next
       end
     end
   end

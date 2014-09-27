@@ -45,5 +45,9 @@ module FollowerMaze
     def remove_follower(user_id)
       @followers.delete(user_id)
     end
+
+    def map
+      yield self
+    end
   end
 end

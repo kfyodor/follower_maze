@@ -55,13 +55,10 @@ module FollowerMaze
     end
 
     def build_notifications &block
-      case d = deliver_to
-      when User
+      before_callback if has_side_effects?
+
+      deliver_to.map do |d|
         block.call Notification.new(self, d)
-      else
-        d.map do |user|
-          block.call Notification.new(self, user)
-        end
       end
     end
 
