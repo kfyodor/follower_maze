@@ -31,8 +31,8 @@ Run RSpec test suite:
 Run provided .jar test:
 
 ```bash
-  cd support./
-  followermaze.sh
+  cd support
+  ./followermaze.sh
 ```
 
 ### Design
