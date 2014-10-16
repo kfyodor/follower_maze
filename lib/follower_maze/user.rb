@@ -2,36 +2,10 @@ module FollowerMaze
   class User
     attr_reader :id, :followers
 
-    @@users = {}
-
-    class << self
-      def all
-        @@users.values
-      end
-
-      def find(id)
-        @@users[id]
-      end
-
-      def find_many(ids)
-        @@users.select { |k, u| ids.include?(k) }.values
-      end
-
-      def create(id, attrs = {})
-        new(id, attrs)
-      end
-
-      def find_or_create(id)
-        @@users.fetch(id) { new(id) }
-      end
-    end
-
     def initialize(id, attrs = {})
-      @id        = id
-      @followers = []
-      @connection = attrs[:connection]
-
-      @@users[@id] = self
+      @id         = id.to_i
+      @followers  = []
+      @connection = create_connection(attrs)
     end
 
     def notify(data)
@@ -39,15 +13,17 @@ module FollowerMaze
     end
 
     def add_follower(user_id)
-      @followers << user_id
+      @followers << user_id.to_i
     end
 
     def remove_follower(user_id)
-      @followers.delete(user_id)
+      @followers.delete(user_id.to_i)
     end
 
-    def map
-      yield self
+    private
+
+    def create_connection(attrs)
+      Connection.new(attrs[:socket], self) if attrs[:socket]
     end
   end
 end

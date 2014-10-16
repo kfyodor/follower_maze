@@ -1,12 +1,9 @@
 module FollowerMaze
   class User
     class Connection
-      attr_reader :user_id, :user
-
-      def initialize(socket, user_id)
+      def initialize(socket, user)
         @socket  = socket
-        @user_id = user_id
-        @user    = User.new(user_id, connection: self)
+        @user    = user
       end
 
       def disconnect

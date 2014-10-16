@@ -2,43 +2,43 @@ module FollowerMaze
   class Event
     class Dispatcher
       def initialize
-        @sequence_checker = Util::SequenceChecker.new
-        @buffer           = Queue.new
-        @consumer         = nil
+        @storage  = Event::SequentialStorage.new
+        @buffer   = Queue.new
+        @consumer = nil
+        @sender   = nil
+        @mutex    = Mutex.new
+        @users    = Base.users
       end
 
       def <<(event)
-        @sequence_checker << event
-        flush! if @sequence_checker.complete?
+        @mutex.synchronize do
+          @storage << event
+        end
       end
 
       def start
+        @sender = Thread.new do
+          loop do 
+            event = @buffer.pop
+            Event::Handler.from_event(event).handle!
+          end
+        end
+
         @consumer = Thread.new do
-          loop { @buffer.pop.handle! }
+          loop do
+            @mutex.synchronize do
+              if @storage.has_next?
+                $events_received += 1
+                @buffer << @storage.get_next!
+              end
+            end
+          end
         end
       end
 
       def stop
         @consumer.kill
-      end
-
-      private
-
-      def events
-        @sequence_checker.data
-      end
-
-      def flush!
-        build_notifications_from_events
-        @sequence_checker = @sequence_checker.next
-      end
-
-      def build_notifications_from_events
-        events.each do |event|
-          event.build_notifications do |n|
-            @buffer << n
-          end
-        end
+        @sender.kill
       end
     end
   end

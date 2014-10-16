@@ -1,9 +1,9 @@
 module FollowerMaze
   class Base
-    @@connections = User::ConnectionPool.new
+    @@users = User::Repository.new
 
     class << self
-      def connections; @@connections; end
+      def users; @@users; end
     end
 
     def initialize

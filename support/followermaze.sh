@@ -1,6 +1,6 @@
 #! /bin/bash
 
-# export totalEvents=1000000
+export totalEvents=10000
 
 # export randomSeed=666
 # export concurrencyLevel=100

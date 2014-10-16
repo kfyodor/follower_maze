@@ -16,6 +16,7 @@ module FollowerMaze
     end
 
     def listen
+      $events_received = 0
       @dispatcher.start
 
       loop do
@@ -25,7 +26,7 @@ module FollowerMaze
           conn = socket.accept
 
           until conn.eof?
-            @dispatcher << Event.from_payload(conn.readline.strip)
+            @dispatcher << Event.new(conn.readline.strip)
           end
 
         rescue Errno::EBADF, IOError
@@ -36,6 +37,7 @@ module FollowerMaze
                # delete all followers from the database
                # and regenerate events
         end
+        puts '----> ' + $events_received.to_s
         $logger.info "====> Event source disconnected."
       end
     end
