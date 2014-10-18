@@ -4,7 +4,6 @@ module FollowerMaze
       def initialize
         @events  = {}
         @next_id = 1
-        @mutex   = Mutex.new
       end
 
       def <<(event)

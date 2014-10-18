@@ -28,7 +28,6 @@ module FollowerMaze
           loop do
             @mutex.synchronize do
               if @storage.has_next?
-                $events_received += 1
                 @buffer << @storage.get_next!
               end
             end

@@ -51,8 +51,8 @@ module FollowerMaze
 
     class Handler::StatusUpdate < Handler
       def handle!
-        @users.find_many(from_user.followers).each do |user|
-          user.notify @event.payload
+        from_user.followers.each do |user_id|
+          @users.find(user_id).notify @event.payload
         end
       end
     end

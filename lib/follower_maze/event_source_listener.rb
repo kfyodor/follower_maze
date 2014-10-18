@@ -16,7 +16,6 @@ module FollowerMaze
     end
 
     def listen
-      $events_received = 0
       @dispatcher.start
 
       loop do
@@ -37,7 +36,6 @@ module FollowerMaze
                # delete all followers from the database
                # and regenerate events
         end
-        puts '----> ' + $events_received.to_s
         $logger.info "====> Event source disconnected."
       end
     end

@@ -11,9 +11,9 @@ module FollowerMaze
       loop do
         begin
           conn    = socket.accept
-          user_id = conn.readline.strip.encode("UTF-8").to_i
+          user_id = conn.readline.strip
 
-          Base.users << User.new(user_id, socket: conn)
+          Base.users << User.new(user_id, conn)
 
           $logger.debug "User #{user_id} connected!"
         rescue Errno::EBADF, IOError
